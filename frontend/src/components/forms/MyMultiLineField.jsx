@@ -3,7 +3,7 @@ import TextField from "@mui/material/TextField";
 import { Controller } from "react-hook-form";
 
 export default function MyMultiLineField(props) {
-  const { label, placeholder, name, control } = props;
+  const { label, width, placeholder, name, control } = props;
   return (
     <Controller
       name={name}
@@ -14,11 +14,13 @@ export default function MyMultiLineField(props) {
         formState,
       }) => (
         <TextField
+          sx={{ width: { width } }}
           id="outlined-multiline-flexible"
+          onChange={onChange}
+          value={value}
           multiline
           maxRows={4}
           label={label}
-          defaultValue={"Default"}
           placeholder={placeholder}
         />
       )}
