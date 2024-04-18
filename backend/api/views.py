@@ -12,6 +12,8 @@ class ProjectViewSet(viewsets.ViewSet):
     serializer_class = ProjectSerializer
 
     def list(self, request):
+        # Обновляем queryset перед сериализацией данных
+        self.queryset = Project.objects.all()
         queryset = self.queryset
         serializer = self.serializer_class(queryset, many=True)
 
