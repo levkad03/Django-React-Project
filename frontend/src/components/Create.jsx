@@ -16,7 +16,7 @@ const Create = () => {
     comments: '',
     status: '',
   };
-  const { handleSubmit, reset, setValue, control } = useForm({
+  const { handleSubmit, control } = useForm({
     defaultValues: defaultValues,
   });
   const submission = data => {
