@@ -1,7 +1,19 @@
 from rest_framework import viewsets, permissions
-from .models import Project
-from .serializers import ProjectSerializer
+from .models import Project, ProjectManager
+from .serializers import ProjectSerializer, ProjectManagerSerializer
 from rest_framework.response import Response
+
+
+class ProjectManagerViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.AllowAny]
+    queryset = ProjectManager.objects.all()
+    serializer_class = ProjectManagerSerializer
+
+    def list(self, request):
+        queryset = self.queryset.all()
+        serializer = self.serializer_class(queryset, many=True)
+
+        return Response(serializer.data)
 
 
 class ProjectViewSet(viewsets.ViewSet):
