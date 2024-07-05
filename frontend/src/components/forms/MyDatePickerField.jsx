@@ -11,12 +11,18 @@ export default function MyDatePicker(props) {
       <Controller
         name={name}
         control={control}
-        render={({ field: { onChange, value } }) => (
+        render={({ field: { onChange, value }, fieldState: { error }, formState }) => (
           <DatePicker
             sx={{ width: { width } }}
             label={label}
             onChange={onChange}
             value={value}
+            slotProps={{
+              textField: {
+                error: !!error,
+                helperText: error?.message,
+              },
+            }}
           />
         )}
       />

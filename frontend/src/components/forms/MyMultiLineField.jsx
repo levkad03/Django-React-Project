@@ -18,6 +18,8 @@ export default function MyMultiLineField(props) {
           maxRows={4}
           label={label}
           placeholder={placeholder}
+          error={!!error}
+          helperText={error?.message}
         />
       )}
     />
