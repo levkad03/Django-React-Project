@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import MyTextField from './forms/MyTextField';
 import MyMultiLineField from './forms/MyMultiLineField';
@@ -12,6 +12,26 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 const Create = () => {
+  const [projectManager, setProjectManager] = useState();
+  const [loading, setLoading] = useState(true);
+  const hardcodedOptions = [
+    { id: '', name: 'None' },
+    { id: 'Open', name: 'Open' },
+    { id: 'In Progress', name: 'In Progress' },
+    { id: 'Completed', name: 'Completed' },
+  ];
+
+  const GetData = () => {
+    AxiosInstance.get(`projectmanager/`).then(res => {
+      setProjectManager(res.data);
+      setLoading(false);
+    });
+  };
+
+  useEffect(() => {
+    GetData();
+  }, []);
+
   const navigate = useNavigate();
   const defaultValues = {
     name: '',
@@ -21,6 +41,7 @@ const Create = () => {
 
   const schema = yup.object({
     name: yup.string().required('Name is required field'),
+    projectmanager: yup.string().required('Project Manager is required field'),
     status: yup.string().required('Status is required field'),
     comments: yup.string(),
     start_date: yup.date().required('Start date is required field'),
@@ -39,6 +60,7 @@ const Create = () => {
     const EndDate = Dayjs(data.end_date['$d']).format('YYYY-MM-DD');
     AxiosInstance.post(`project/`, {
       name: data.name,
+      project_manager: data.projectmanager,
       status: data.status,
       comments: data.comments,
       start_date: StartDate,
@@ -49,76 +71,99 @@ const Create = () => {
   };
   return (
     <div>
-      <form onSubmit={handleSubmit(submission)}>
-        <Box
-          sx={{
-            display: 'flex',
-            width: '100%',
-            backgroundColor: '#00003f',
-            marginBottom: '10px',
-          }}
-        >
-          <Typography sx={{ marginLeft: '20px', color: '#ffffff' }}>
-            Create Records
-          </Typography>
-        </Box>
-
-        <Box
-          sx={{
-            display: 'flex',
-            width: '100%',
-            boxShadow: 3,
-            padding: 4,
-            flexDirection: 'column',
-          }}
-        >
+      {loading ? (
+        <p>Loading data...</p>
+      ) : (
+        <form onSubmit={handleSubmit(submission)}>
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'space-around',
-              marginBottom: '40px',
+              width: '100%',
+              backgroundColor: '#00003f',
+              marginBottom: '10px',
             }}
           >
-            <MyTextField
-              label="Name"
-              name="name"
-              control={control}
-              placeholder="Provide a project name"
-              width={'30%'}
-            />
-
-            <MyDatePicker
-              label="Start Date"
-              name="start_date"
-              control={control}
-              width={'30%'}
-            />
-
-            <MyDatePicker
-              label="End Date"
-              name="end_date"
-              control={control}
-              width={'30%'}
-            />
+            <Typography sx={{ marginLeft: '20px', color: '#ffffff' }}>
+              Create Records
+            </Typography>
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-            <MyMultiLineField
-              label="Comments"
-              name="comments"
-              control={control}
-              placeholder="Provide project comments"
-              width={'30%'}
-            />
 
-            <MySelectField label="Status" name="status" control={control} width={'30%'} />
-            <Box sx={{ width: '30%' }}>
-              <Button variant="contained" type="submit" sx={{ width: '100%' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              width: '100%',
+              boxShadow: 3,
+              padding: 4,
+              flexDirection: 'column',
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                marginBottom: '40px',
+              }}
+            >
+              <MyTextField
+                label="Name"
+                name="name"
+                control={control}
+                placeholder="Provide a project name"
+                width={'30%'}
+              />
+
+              <MyDatePicker
+                label="Start Date"
+                name="start_date"
+                control={control}
+                width={'30%'}
+              />
+
+              <MyDatePicker
+                label="End Date"
+                name="end_date"
+                control={control}
+                width={'30%'}
+              />
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+              <MyMultiLineField
+                label="Comments"
+                name="comments"
+                control={control}
+                placeholder="Provide project comments"
+                width={'30%'}
+              />
+
+              <MySelectField
+                label="Status"
+                name="status"
+                control={control}
+                width={'30%'}
+                options={hardcodedOptions}
+              />
+              <MySelectField
+                label="Project Manager"
+                name="projectmanager"
+                control={control}
+                width={'30%'}
+                options={projectManager}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'start',
+                marginTop: '40px',
+              }}
+            >
+              <Button variant="contained" type="submit" sx={{ width: '30%' }}>
                 Submit
               </Button>
             </Box>
           </Box>
-        </Box>
-      </form>
+        </form>
+      )}
     </div>
   );
 };
